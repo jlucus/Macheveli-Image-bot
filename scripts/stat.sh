@@ -373,12 +373,12 @@ image = (
     .env({"HF_HUB_ENABLE_HF_TRANSFER": "1"})
 )
 
-stub = modal.Stub("logo-generator")
+app = modal.App("logo-generator")
 
 # Cache model weights
 hf_cache_vol = modal.Volume.from_name("huggingface-cache", create_if_missing=True)
 
-@stub.function(
+@app.function(
     image=image,
     gpu="H100",
     volumes={"/root/.cache/huggingface": hf_cache_vol},
@@ -415,7 +415,7 @@ Output ONLY the SVG code, no explanations. Start with <svg and end with </svg>."
         raise RuntimeError(f"Logo generation failed: {str(e)}")
 
 
-@stub.function(image=image)
+@app.function(image=image)
 def save_svg_logo(svg_code: str, filename: str, output_dir: str = "/tmp") -> str:
     """Save SVG logo to file"""
     try:
@@ -620,13 +620,16 @@ main() {
     
     # Validation
     validate_installation || return 1
-    
-    # Execution
-    run_logo_generator || return 1
-    
+
+    # Execution (non-fatal - requires Modal deployment)
+    log_info "Skipping logo generator execution (requires Modal deployment)"
+    log_info "To run the logo generator later:"
+    log_info "  1. Deploy Modal app: cd modal_project/src && modal deploy logo_generator.py"
+    log_info "  2. Run generator: python modal_project/run_logo_generator.py"
+
     # Summary
     print_summary
-    
+
     return 0
 }
 
