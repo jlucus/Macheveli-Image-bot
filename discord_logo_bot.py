@@ -8,33 +8,21 @@ from dotenv import load_dotenv
 # Load environment variables from .env file
 load_dotenv()
 
-# Import Modal function directly from the deployed app
+# Connect to deployed Modal function
+import modal
+
 MODAL_SERVER = os.getenv("MODAL_SERVER")
 APP_NAME = "logo-generator"
 
-# Try to import the function from the Modal app
+# Look up the deployed Modal function (not local import)
 try:
-    import sys
-    import os as os_module
-
-    # Handle both script and Jupyter environments
-    try:
-        script_dir = os_module.path.dirname(os_module.path.abspath(__file__))
-    except NameError:
-        # __file__ not defined (Jupyter/IPython)
-        script_dir = os_module.getcwd()
-
-    modal_project_path = os_module.path.join(script_dir, "modal_project", "src")
-
-    if modal_project_path not in sys.path:
-        sys.path.insert(0, modal_project_path)
-
-    from logo_generator import generate_logo_svg
-    print(f"✅ Imported Modal function from: {modal_project_path}")
-except ImportError as e:
-    print(f"⚠️  Warning: Could not import Modal function: {e}")
-    print(f"⚠️  Make sure modal_project/src/logo_generator.py exists")
-    print(f"⚠️  Current working directory: {os.getcwd()}")
+    # This connects to the deployed Modal app
+    generate_logo_svg = modal.Function.lookup(APP_NAME, "generate_logo_svg")
+    print(f"✅ Connected to deployed Modal function: {APP_NAME}/generate_logo_svg")
+except Exception as e:
+    print(f"⚠️  Warning: Could not connect to Modal function: {e}")
+    print(f"⚠️  Make sure the app is deployed: modal deploy modal_project/src/logo_generator.py")
+    print(f"⚠️  App name: {APP_NAME}")
     generate_logo_svg = None
 
 # Bot setup
