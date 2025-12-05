@@ -16,8 +16,8 @@ APP_NAME = "logo-generator"
 
 # Look up the deployed Modal function (not local import)
 try:
-    # This connects to the deployed Modal app
-    generate_logo_svg = modal.Function.lookup(APP_NAME, "generate_logo_svg")
+    # This connects to the deployed Modal app using from_name
+    generate_logo_svg = modal.Function.from_name(APP_NAME, "generate_logo_svg")
     print(f"✅ Connected to deployed Modal function: {APP_NAME}/generate_logo_svg")
 except Exception as e:
     print(f"⚠️  Warning: Could not connect to Modal function: {e}")
