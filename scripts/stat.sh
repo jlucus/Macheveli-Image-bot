@@ -390,7 +390,7 @@ def generate_logo_svg(prompt: str) -> str:
         from vllm import LLM, SamplingParams
         
         print(f"Loading model...")
-        llm = LLM(model="Qwen/Qwen3-8B-FP8")
+        llm = LLM(model="Qwen/Qwen2.5-7B-Instruct")
         
         full_prompt = f"""Generate only valid SVG code for a logo based on this description: {prompt}
 Output ONLY the SVG code, no explanations. Start with <svg and end with </svg>."""
